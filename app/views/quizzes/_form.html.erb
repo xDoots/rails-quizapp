@@ -1,0 +1,50 @@
+<%= form_with(model: quiz, data: {
+  controller: "nested-form",
+  nested_form_wrapper_selector_value: '.nested-form-wrapper'
+}) do |form| %>
+  <% if quiz.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(quiz.errors.count, "error") %> prohibited this quiz from being saved:</h2>
+
+      <ul>
+        <% quiz.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :title, style: "display: block" %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div>
+    <%= form.label :description, style: "display: block" %>
+    <%= form.textarea :description %>
+  </div>
+
+  <div>
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div>
+    <%= form.label :public, style: "display: block" %>
+    <%= form.checkbox :public %>
+  </div>
+
+  <template data-nested-form-target="template">
+    <%= form.fields_for :questions, Question.new, child_index: 'NEW_RECORD' do |question_fields| %>
+      <%= render "quizzes/quiz_question_form", f: question_fields %>
+    <% end %>
+  </template>
+  <% form.fields_for :questions do |question_fields| %>
+    <% render "quizzes/quiz_question_form", f: question_fields %>
+  <% end %>
+  <div data-nested-form-target="target"></div>
+  <button type="button" data-action="nested-form#add">Add Question</button>
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

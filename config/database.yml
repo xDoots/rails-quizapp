@@ -1,0 +1,22 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: postgres   # change if your postgres username is different
+  password: admin           # add if you set a password for postgres
+  host: localhost
+
+development:
+  <<: *default
+  database: quizapp_development
+
+test:
+  <<: *default
+  database: quizapp_test
+
+production:
+  <<: *default
+  database: quizapp_production
+  username: postgres
+  password: admin
+
