@@ -1,0 +1,15 @@
+<div class="nested-option-wrapper" data-new-record="<%= f.object.new_record? %>">
+  <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+    <%= f.text_field :name, placeholder: "Answer option" %>
+
+    <label style="display: flex; align-items: center; gap: 4px;">
+      <%= f.check_box :is_correct %>
+      Correct?
+    </label>
+
+    <button type="button" data-action="nested-form#remove">Remove option</button>
+  </div>
+
+  <%= f.hidden_field :_destroy %>
+</div>
+

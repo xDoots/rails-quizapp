@@ -1,8 +1,49 @@
-<div class="nested-form-wrapper" data-new-record="<% f.object.new_record? %>">
-    <%= f.label :name %>
-    <%= f.text_field :name %>
+<div class="nested-question-wrapper" data-new-record="<%= f.object.new_record? %>">
+  <!-- Question row: name + points -->
+  <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 8px;">
+    <div>
+      <%= f.label :name, "Question" %>
+      <%= f.text_field :name %>
+    </div>
 
+    <div>
+      <%= f.label :points %>
+      <%= f.number_field :points, value: (f.object.points || 1), min: 1, style: "width: 60px;" %>
+    </div>
+  </div>
+
+  <!-- OPTIONS nested-form controller (scoped to THIS question) -->
+  <div
+    data-controller="nested-form"
+    data-nested-form-wrapper-selector-value=".nested-option-wrapper"
+    style="margin-left: 16px; margin-bottom: 8px;"
+  >
+    <h4 style="margin: 4px 0;">Options</h4>
+
+    <!-- Template for a NEW option -->
+    <template data-nested-form-target="template">
+      <%= f.fields_for :options, Option.new, child_index: 'NEW_RECORD' do |of| %>
+        <%= render "quizzes/option_fields", f: of %>
+      <% end %>
+    </template>
+
+    <!-- Existing options -->
+    <div data-nested-form-target="target">
+      <%= f.fields_for :options do |of| %>
+        <%= render "quizzes/option_fields", f: of %>
+      <% end %>
+    </div>
+
+    <button type="button" data-action="nested-form#add">Add Option</button>
+  </div>
+
+  <!-- Remove question button AFTER options -->
+  <div style="margin-top: 8px;">
     <button type="button" data-action="nested-form#remove">Remove question</button>
-    
     <%= f.hidden_field :_destroy %>
+  </div>
+
+  <!-- Divider line BELOW the options + delete button -->
+  <hr>
 </div>
+
