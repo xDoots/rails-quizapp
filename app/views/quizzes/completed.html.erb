@@ -1,0 +1,54 @@
+<% content_for :title, @quiz.title %>
+<h1>Quiz Completed!</h1>
+<h2><%= @quiz.title %></h2>
+
+<p>You scored <strong><%= @score %></strong> out of <strong><%= @max_points %></strong> points.</p>
+
+<h3>Questions and Your Answers:</h3>
+<ul>
+  <% @quiz.questions.each do |question| %>
+    <li>
+      <strong><%= question.name %></strong><br>
+
+      Correct answer:
+      <% correct_options = question.options.select(&:is_correct?) %>
+      <%= correct_options.map(&:name).join(', ') %><br>
+
+      Your answer:
+      <% attempt_answer = @quiz_attempt.quiz_attempt_answers.find_by(question_id: question.id) %>
+      <% if attempt_answer %>
+        <% user_option = question.options.find { |opt| opt.id == attempt_answer.option_id } %>
+        <% if user_option && !correct_options.include?(user_option) %>
+          <span style="color: red;"><%= user_option.name %></span>
+        <% else %>
+          <%= user_option&.name || 'No answer' %>
+        <% end %>
+      <% else %>
+        No answer
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+
+<div style="margin-top: 20px;">
+  <%= link_to 'View All Results', quiz_results_path(@quiz), class: "back-button" %>
+  <%= link_to 'Back to quiz', quiz_path(@quiz), class: "back-button" %>
+</div>
+
+<style>
+  .back-button:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  .back-button {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 6px 12px;
+    transition: all 0.2s ease-in-out;
+  }
+</style>

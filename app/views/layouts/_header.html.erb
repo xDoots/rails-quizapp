@@ -1,0 +1,65 @@
+<header class="site-header">
+  <nav class="nav-left">
+    <%= link_to "My Quizzes", quizzes_path, class: "nav-btn" %>
+    <%= link_to "All Quizzes", all_quizzes_path, class: "nav-btn" %>
+  </nav>
+
+<nav class="nav-right">
+  <% if current_user&.admin? %>
+    <span style="color: red; font-weight: bold; margin-right: 10px;">Admin mode</span>
+  <% end %>
+  
+  <%= button_to "Log Out", destroy_user_session_path, method: :delete, class: "logout-btn", form: { style: "display: inline;" } %>
+</nav>
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ccc; /* light grey line */
+    padding: 10px 20px;
+    background-color: white;
+  }
+
+  .nav-left {
+    display: flex;
+    gap: 10px; /* space between the two nav links */
+  }
+
+  .nav-btn {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    padding: 8px 14px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+
+  .nav-btn:hover {
+    background-color: #f5f5f5;
+    border-color: #999;
+  }
+
+  .nav-right form {
+    margin: 0; /* remove extra space from button_to form */
+  }
+
+  .logout-btn {
+    background-color: red;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .logout-btn:hover {
+    background-color: darkred;
+  }
+</style>

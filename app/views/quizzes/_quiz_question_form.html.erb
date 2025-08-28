@@ -16,13 +16,14 @@
   <div
     data-controller="nested-form"
     data-nested-form-wrapper-selector-value=".nested-option-wrapper"
+    data-nested-form-new-record-token-value="NEW_OPTION"
     style="margin-left: 16px; margin-bottom: 8px;"
   >
     <h4 style="margin: 4px 0;">Options</h4>
 
     <!-- Template for a NEW option -->
     <template data-nested-form-target="template">
-      <%= f.fields_for :options, Option.new, child_index: 'NEW_RECORD' do |of| %>
+      <%= f.fields_for :options, Option.new, child_index: 'NEW_OPTION' do |of| %>
         <%= render "quizzes/option_fields", f: of %>
       <% end %>
     </template>

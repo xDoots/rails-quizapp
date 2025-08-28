@@ -12,6 +12,11 @@
   <% end %>
 
   <div>
+    <%= form.label :public, "Make this quiz public?" %>
+    <%= form.check_box :public %>
+  </div>
+
+  <div>
     <%= form.label :title %>
     <%= form.text_field :title %>
   </div>
@@ -21,19 +26,15 @@
     <%= form.text_area :description %>
   </div>
 
-  <div>
-    <%= form.label :public %>
-    <%= form.check_box :public %>
-  </div>
-
   <!-- QUESTIONS nested-form controller -->
   <div
     data-controller="nested-form"
     data-nested-form-wrapper-selector-value=".nested-question-wrapper"
+    data-nested-form-new-record-token-value="NEW_QUESTION"
   >
     <!-- Template for a NEW question -->
     <template data-nested-form-target="template">
-      <%= form.fields_for :questions, Question.new, child_index: 'NEW_RECORD' do |qf| %>
+      <%= form.fields_for :questions, Question.new, child_index: 'NEW_QUESTION' do |qf| %>
         <%= render "quizzes/quiz_question_form", f: qf %>
       <% end %>
     </template>

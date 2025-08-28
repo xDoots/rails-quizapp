@@ -1,0 +1,14 @@
+<% content_for :title, "All Quizzes" %>
+
+<h1>All Quizzes</h1>
+<%= form_with(url: all_quizzes_path, method: :get, data: {controller: 'search-form', turbo_frame: 'quizzes', turbo_action: 'advance'}) do |form| %>
+  <%= form.label :query, "Search quizzes", class: "label" %>
+<div class="container is-flex py-4">
+  <%= form.text_field :query, class: "input mr-4", data: {action: "input->search-form#search"} %>
+  <%= form.submit "Search", class: "button has-background-warning has-text-primary-15-invert" %>
+</div>
+<% end %>
+
+<%= turbo_frame_tag "quizzes" do %>
+  <%= render partial: "table", locals: { quizzes: @quizzes } %>
+<% end %>

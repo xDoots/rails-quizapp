@@ -1,10 +1,16 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, @quiz.title %>
+
+<h1><%= @quiz.title %></h1>
 
 <%= render @quiz %>
 
-<div>
-  <%= link_to "Edit this quiz", edit_quiz_path(@quiz) %> |
-  <%= link_to "Back to quizzes", quizzes_path %>
+<div class="quiz-actions">
+  <%= link_to "View results", quiz_results_path(@quiz), class: "header-btn" %>
+  <%= link_to "Take this quiz", take_quiz_path(@quiz), class: "header-btn" %>
+  <%= link_to "Edit this quiz", edit_quiz_path(@quiz), class: "header-btn" %>
+  <%= link_to "Back to quizzes", quizzes_path, class: "header-btn" %>
 
-  <%= button_to "Destroy this quiz", @quiz, method: :delete %>
+  <p>
+    <%= button_to "Delete this quiz!", @quiz, method: :delete, class: "delete-btn" %>
+  </p>
 </div>

@@ -1,0 +1,66 @@
+<style>
+  #quizzes {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+  }
+    #quizzes, #quizzes th, #quizzes td, #quizzes tr {
+    margin: 0;
+    padding: 0;
+  }
+  #quizzes th, #quizzes td {
+    border: 1px solid #ccc;
+    padding: 3px 8px;
+    vertical-align: middle; text-align: left;
+  }
+  #quizzes th {
+    background-color: #f8f8f8;
+  }
+
+  .quiz-title-link {
+    color: black;
+    text-decoration: none;
+  }
+
+  .quiz-title-link:hover {
+    text-decoration: underline;
+  }
+
+  .quiz-action-button {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 2px 12px;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .quiz-action-button:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
+  }
+  #quizzes td form button.quiz-action-button {
+    margin-top: 4px;
+  }
+
+  td form {
+    margin: 0;
+  }
+</style>
+
+
+<table id="quizzes">
+  <tbody>
+    <tr id="<%= dom_id(quiz) %>">
+      <td><%= quiz.user.username %></td>
+      <td><%= link_to quiz.title, quiz_path(quiz), class: "quiz-title-link" %></td>
+      <td>
+        <%= button_to 'Delete', quiz, method: :delete, form: { style: "display: inline;" }, class: "quiz-action-button" %>
+      </td>
+    </tr>
+  </tbody>
+</table>

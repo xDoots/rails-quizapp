@@ -1,0 +1,19 @@
+<% content_for :title, @quiz.title %>
+<h1>Taking Quiz: <%= @quiz.title %></h1>
+
+<%= form_with url: quiz_quiz_attempts_path(@quiz), method: :post do |f| %>
+  <% submitted_answers ||= {} %>
+  <% @quiz.questions.each do |question| %>
+    <div class="question text-4xl">
+      <h1><%= question.name %></h1>
+    </div>
+    <% question.options.each do |option| %>
+      <% next if option.name.blank? %> <!-- skip empty options -->
+      <div>
+        <%= radio_button_tag "answers[#{question.id}]", option.id, submitted_answers[question.id.to_s] == option.id.to_s %>
+        <span class="text-1xl"><%= option.name %></span>
+      </div>
+    <% end %>
+  <% end %>
+  <%= f.submit "Submit Answers" %>
+<% end %>

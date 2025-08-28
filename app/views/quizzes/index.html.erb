@@ -1,16 +1,20 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, "My Quizzes" %>
 
-<% content_for :title, "Quizzes" %>
+<h1>My Quizzes</h1>
 
-<h1>Quizzes</h1>
-
-<div id="quizzes">
-  <% @quizzes.each do |quiz| %>
-    <%= render quiz %>
-    <p>
-      <%= link_to "Show this quiz", quiz %>
-    </p>
-  <% end %>
-</div>
+<table id="quizzes">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Title</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @quizzes.each do |quiz| %>
+      <%= render "quiz_row", quiz: quiz %>
+    <% end %>
+  </tbody>
+</table>
 
 <%= link_to "New quiz", new_quiz_path %>

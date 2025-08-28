@@ -1,0 +1,90 @@
+<% content_for :title, @quiz.title %>
+<h1><%= @quiz.title %></h1>
+
+<% if @quiz_attempts.any? %>
+  <style>
+  #quiz_attempts {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+  }
+
+  #quiz_attempts, #quiz_attempts th, #quiz_attempts td, #quiz_attempts tr {
+    margin: 0;
+    padding: 0;
+  }
+
+  #quiz_attempts th, #quiz_attempts td {
+    border: 1px solid #ccc;
+    padding: 8px 8px;
+    vertical-align: middle;
+    text-align: left;
+  }
+
+  #quiz_attempts th {
+    background-color: #f8f8f8;
+  }
+
+  .result-button {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    height: 29px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+
+  .result-button:hover, .back-button:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  .back-button {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 6px 12px;
+    transition: all 0.2s ease-in-out;
+  }
+</style>
+
+  <div style="display: flex; gap: 15px; align-items: flex-start; margin-top: -8px;">
+    <table id="quiz_attempts">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Score</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @quiz_attempts.each do |quiz_attempt| %>
+          <%= render "quiz_results", quiz_attempt: quiz_attempt %>
+        <% end %>
+      </tbody>
+    </table>
+
+    <div id="results-buttons" style="display: flex; flex-direction: column; gap: 4px; margin-top: 40px;">
+      <% @quiz_attempts.each do |quiz_attempt| %>
+        <%= link_to 'View', quiz_completed_path(quiz_attempt.quiz, attempt_id: quiz_attempt.id), class: "result-button" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div style="margin-top: 20px;">
+    <%= link_to 'Back to Quiz', quiz_path(@quiz_attempts.first.quiz), class: "back-button" %>
+  </div>
+<% else %>
+  <p>No quiz attempts found for this quiz.</p>
+<% end %>
