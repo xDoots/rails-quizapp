@@ -56,7 +56,7 @@
           <%= link_to quiz.title, quiz_path(quiz), class: "title-link", data: { turbo: false } %>
         </td>
         <td>
-          <%= link_to 'View', quiz_path(quiz), class: 'button' %>
+          <%= link_to 'View', quiz_path(quiz), class: 'button', data: { turbo: false } %>
         </td>
       </tr>
     <% end %>

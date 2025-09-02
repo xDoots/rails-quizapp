@@ -14,7 +14,7 @@ class QuizzesController < ApplicationController
   def all_quizzes
     if params[:query].present?
       @quizzes = Quiz.where(public: true)
-                     .where("title LIKE ?", "%#{params[:query]}%")
+                     .where("title ILIKE :q", q: "%#{params[:query]}%")
     else
       @quizzes = Quiz.where(public: true)
     end
