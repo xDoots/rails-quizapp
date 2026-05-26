@@ -111,20 +111,34 @@ class QuizzesController < ApplicationController
 
     score = 0
 
-    answers.each do |question_id, option_id|
+    answers.each do |question_id, response|
       question = Question.find(question_id)
-      selected_option = Option.find(option_id)
-      score += question.points if selected_option.is_correct?
+
+      case question.question_type.to_s
+      when "single_choice"
+        option = Option.find_by(id: response)
+        score += question.points if option&.is_correct?
+
+      when "multiple_choice"
+        selected_ids = Array(response).map(&:to_i)
+        correct_ids = question.options.where(is_correct: true).pluck(:id)
+
+        score += question.points if selected_ids.sort == correct_ids.sort
+
+      when "free_text"
+        user_answer = response.to_s.downcase.strip
+        valid_answers = question.options.where(is_correct: true).pluck(:name).map { |a| a.downcase.strip }
+
+        # Award points if any correct answer matches
+        score += question.points if valid_answers.include?(user_answer)
+      end
     end
 
-    QuizAttempt.create!(
-      user: current_user,
-      quiz: @quiz,
-      score: score
-    )
+    QuizAttempt.create!(user: current_user, quiz: @quiz, score: score)
 
     redirect_to quiz_results_path(@quiz), notice: "You scored #{score} points!"
   end
+
 
   def results
     @quiz = Quiz.find(params[:id])
@@ -147,6 +161,10 @@ class QuizzesController < ApplicationController
           :id,
           :name,
           :points,
+          :question_type,
+          :free_text_answers,
+          :max_answers,
+          :image,
           :_destroy,
           options_attributes: [ :id, :name, :is_correct, :_destroy ]
         ]

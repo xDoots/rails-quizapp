@@ -65,6 +65,7 @@ end
 gem "devise", "~> 4.9"
 gem "pundit", "~> 2.5"
 
+gem "image_processing", "~> 1.2"
 
 # gem "base64"
 # gem "bigdecimal"

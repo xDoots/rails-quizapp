@@ -3,17 +3,49 @@
 
 <%= form_with url: quiz_quiz_attempts_path(@quiz), method: :post do |f| %>
   <% submitted_answers ||= {} %>
+
   <% @quiz.questions.each do |question| %>
-    <div class="question text-4xl">
-      <h1><%= question.name %></h1>
+    <div class="question text-2xl mb-6">
+      <h2><%= question.name %> (<%= question.points %> pts)</h2>
+
+      <% if question.image.attached? %>
+        <div class="my-2">
+          <%= image_tag question.image.variant(resize_to_limit: [400, 400]) %>
+        </div>
+      <% end %>
+
+      <% case question.question_type %>
+      <% when "single_choice" %>
+        <% question.options.each do |option| %>
+          <% next if option.name.blank? %>
+          <div>
+            <%= radio_button_tag "answers[#{question.id}]", option.id,
+              submitted_answers[question.id.to_s] == option.id.to_s %>
+            <span><%= option.name %></span>
+          </div>
+        <% end %>
+
+      <% when "multiple_choice" %>
+        <% question.options.each do |option| %>
+          <% next if option.name.blank? %>
+          <div>
+            <%= check_box_tag "answers[#{question.id}][]", option.id,
+              Array(submitted_answers[question.id.to_s]).include?(option.id.to_s) %>
+            <span><%= option.name %></span>
+          </div>
+        <% end %>
+
+      <% when "free_text" %>
+        <div>
+          <%= text_field_tag "answers[#{question.id}]",
+            submitted_answers[question.id.to_s],
+            placeholder: "Type your answer..." %>
+          <p class="text-sm text-gray-500">Your answer will be matched ignoring case and spaces.</p>
+        </div>
+      <% end %>
     </div>
-    <% question.options.each do |option| %>
-      <% next if option.name.blank? %> <!-- skip empty options -->
-      <div>
-        <%= radio_button_tag "answers[#{question.id}]", option.id, submitted_answers[question.id.to_s] == option.id.to_s %>
-        <span class="text-1xl"><%= option.name %></span>
-      </div>
-    <% end %>
+    <hr class="my-4">
   <% end %>
-  <%= f.submit "Submit Answers" %>
+
+  <%= f.submit "Submit Answers", class: "btn btn-primary mt-4" %>
 <% end %>

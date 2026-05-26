@@ -10,21 +10,62 @@
     <li>
       <strong><%= question.name %></strong><br>
 
-      Correct answer:
       <% correct_options = question.options.select(&:is_correct?) %>
-      <%= correct_options.map(&:name).join(', ') %><br>
 
-      Your answer:
-      <% attempt_answer = @quiz_attempt.quiz_attempt_answers.find_by(question_id: question.id) %>
-      <% if attempt_answer %>
-        <% user_option = question.options.find { |opt| opt.id == attempt_answer.option_id } %>
-        <% if user_option && !correct_options.include?(user_option) %>
-          <span style="color: red;"><%= user_option.name %></span>
-        <% else %>
-          <%= user_option&.name || 'No answer' %>
+      <% if question.question_type == 'multiple_choice' %>
+        <strong>Correct answers:</strong>
+        <% selected_ids = @quiz_attempt&.quiz_attempt_answers&.where(question_id: question.id)&.pluck(:option_id) || [] %>
+        <% correct_options.each do |opt| %>
+          <% if selected_ids.include?(opt.id) %>
+            <span><%= opt.name %></span>
+          <% else %>
+            <span style="color: green;"><%= opt.name %></span>
+          <% end %>
+          <% unless opt == correct_options.last %>, <% end %>
         <% end %>
+        <br>
+
+        <strong>Your answers:</strong>
+        <% user_options = question.options.select { |o| selected_ids.include?(o.id) } %>
+        <% if user_options.any? %>
+          <% user_options.each do |uo| %>
+            <% if !correct_options.include?(uo) %>
+              <span style="color: red;"><%= uo.name %></span>
+            <% else %>
+              <span><%= uo.name %></span>
+            <% end %>
+            <% unless uo == user_options.last %>, <% end %>
+          <% end %>
+        <% else %>
+          No answer
+        <% end %>
+
       <% else %>
-        No answer
+        Correct answer:
+        <%= correct_options.map(&:name).join(', ') %><br>
+
+        Your answer:
+        <% attempt_answer = @quiz_attempt&.quiz_attempt_answers&.find_by(question_id: question.id) %>
+        <% if attempt_answer %>
+          <% if question.question_type == 'free_text' %>
+            <% answer_text = attempt_answer.text_answer.to_s.strip.presence || attempt_answer.option&.name %>
+            <% correct_texts = correct_options.map { |opt| opt.name.to_s.downcase.strip } %>
+            <% if answer_text.present? && !correct_texts.include?(answer_text.to_s.downcase.strip) %>
+              <span style="color: red;"><%= answer_text %></span>
+            <% else %>
+              <%= answer_text || 'No answer' %>
+            <% end %>
+          <% else %>
+            <% user_option = question.options.find { |opt| opt.id == attempt_answer.option_id } %>
+            <% if user_option && !correct_options.include?(user_option) %>
+              <span style="color: red;"><%= user_option.name %></span>
+            <% else %>
+              <%= user_option&.name || 'No answer' %>
+            <% end %>
+          <% end %>
+        <% else %>
+          No answer
+        <% end %>
       <% end %>
     </li>
   <% end %>

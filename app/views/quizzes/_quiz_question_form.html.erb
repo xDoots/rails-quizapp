@@ -10,9 +10,35 @@
       <%= f.label :points %>
       <%= f.number_field :points, value: (f.object.points || 1), min: 1, style: "width: 60px;" %>
     </div>
+
+    <div>
+      <%= f.label :question_type, "Type" %>
+      <%= f.select :question_type, Question::QUESTION_TYPES.map { |t| [t.humanize, t] }, {}, { class: "select" } %>
+    </div>
   </div>
 
-  <!-- OPTIONS nested-form controller (scoped to THIS question) -->
+  <!-- Multiple choice settings -->
+  <div class="multiple-choice-settings" style="<%= f.object.question_type == 'multiple_choice' ? '' : 'display:none;' %>">
+    <%= f.label :max_answers, "Max allowed answers" %>
+    <%= f.number_field :max_answers, min: 1, value: (f.object.max_answers || 1), style: "width: 60px;" %>
+  </div>
+
+  <!-- Free text settings -->
+  <div class="free-text-settings" style="<%= f.object.question_type == 'free_text' ? '' : 'display:none;' %>">
+  </div>
+
+  <!-- Image upload -->
+  <div>
+    <%= f.label :image, "Attach Image" %>
+    <%= f.file_field :image %>
+    <% if f.object.image.attached? %>
+      <div>
+        <%= image_tag f.object.image, style: "max-width: 200px; margin-top: 8px;" %>
+      </div>
+    <% end %>
+  </div>
+
+ <!-- OPTIONS nested-form controller (scoped to THIS question) -->
   <div
     data-controller="nested-form"
     data-nested-form-wrapper-selector-value=".nested-option-wrapper"
@@ -24,14 +50,14 @@
     <!-- Template for a NEW option -->
     <template data-nested-form-target="template">
       <%= f.fields_for :options, Option.new, child_index: 'NEW_OPTION' do |of| %>
-        <%= render "quizzes/option_fields", f: of %>
+        <%= render "quizzes/option_fields", f: of, q_type: f.object.question_type %>
       <% end %>
     </template>
 
     <!-- Existing options -->
     <div data-nested-form-target="target">
       <%= f.fields_for :options do |of| %>
-        <%= render "quizzes/option_fields", f: of %>
+        <%= render "quizzes/option_fields", f: of, q_type: f.object.question_type %>
       <% end %>
     </div>
 
